@@ -14,12 +14,12 @@ Our initial strategy for filtering the NCBI database was
 
 The filtering is detailed [here](https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&GenomicMoltype_s=ssRNA(%2B)&HostLineage_ss=Eukaryota%20(eucaryotes),%20taxid:2759&SourceDB_s=RefSeq&GenomeCompleteness_s=complete&Completeness_s=complete).
 
-I downlooad this sequence into data/sequences_initial.acc and then use 
+I downlooad this set of accessions into `data/sequences_initial.acc` (included in this repo) and then use 
 ```bash
-python scripts/download.py data/sequences_v1.acc work/sequences_v1/
+python scripts/download.py --api-key=[API_KEY] data/sequences_v1.acc work/sequences_v1/
 python scripts/parse.py work/sequences_v1/ work/utrs_v1/
 ``` 
 
-to download the sequences.
+to download the sequences. *Note:* you have to get your own API key from NCBI to use the download script. This is done by logging into your NCBI account and going to `Account Settings` and going to the section **API Key Management**.
 
-Initially, `parse.py` works only on explicitly labeled UTRs which represents a subset of the seed sequences. 
+Currently, `parse.py` works only on explicitly labeled UTRs which represents a subset of the seed sequences. 
