@@ -9,6 +9,9 @@ wheels/
 # Virtual environments
 .venv
 
+# R
+.Rhistory
+
 # Local data
 work/
 .Rproj.user

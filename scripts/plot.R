@@ -1,4 +1,4 @@
-seqs <- purrr::map(fs::dir_ls("work/utrs_v1/", glob="**.fa"),
+seqs <- purrr::map(fs::dir_ls("work/utrs_igs_v2/", glob="**.fa"),
                    Biostrings::readDNAStringSet)
 
 annotation_str <- function(lens) {
@@ -13,7 +13,7 @@ lens |>
   ggplot2::geom_histogram() + 
   ggplot2::labs(y = "count") +
   ggplot2::theme_bw() + 
-  ggplot2::annotate("text", x = 1000, y=75, 
+  ggplot2::annotate("text", x = 3000, y=200, 
                     label = label)
 
 
@@ -24,5 +24,5 @@ lens_filt |>
   ggplot2::geom_histogram() + 
   ggplot2::labs(y = "count") +
   ggplot2::theme_bw() + 
-  ggplot2::annotate("text", x = 1000, y=75, 
+  ggplot2::annotate("text", x = 3000, y=200, 
                     label = label)
