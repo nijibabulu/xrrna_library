@@ -31,3 +31,14 @@ Finally we construct teh library with `construct_library.py`.
 ```bash
 python scripts/construct_library.py work/utrs_igs_v3/ work/library_v1.fa
 ```
+
+### Check for duplicates
+
+
+Make a library with inserts only and construct an index of it
+```bash
+python scripts/construct_library.py --seq5='' --seq3='' --oligo-length=196 work/utrs_igs_v3/ work/library_v1_inserts_only.fa 
+/opt/homebrew/Cellar/bowtie2/2.5.4/bin/bowtie2-build work/library_v1_inserts_only.fa work/index/library_v1_inserts_only
+bowtie2 -a  -f -x work/index/library_v1_inserts_only -U work/library_v1_inserts_only.fa -S | samtools view -Sb > work/library_v1_inserts_only.bam
+```
+
