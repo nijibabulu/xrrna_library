@@ -8,18 +8,15 @@ from Bio.SeqFeature import SeqFeature, SimpleLocation
 
 
 def write_feat(rec: SeqRecord, feat: SeqFeature, out_stem: str, output_dir: Path):
-    utr_rec = feat.extract(rec)
+    feat_rec = feat.extract(rec)
     feat_type_slug = feat.type.replace("'", "").replace(" ", "_")
     range_str = f"{feat.location.start}-{feat.location.end}.{feat_type_slug}"
-    utr_rec.description += f" {feat.type} {range_str}"
+    feat_rec.description += f" {feat.type} {range_str}"
     out_path = output_dir / f"{out_stem}_{range_str}.fa"
-    SeqIO.write(utr_rec, out_path, "fasta")
+    SeqIO.write(feat_rec, out_path, "fasta")
 
 
-def create_intergenic_feature(cds1: SeqFeature, cds2: SeqFeature):
-    start = cds1.location.end + 1
-    end = cds2.location.start - 1
-    strand = cds1.location.strand  # should always be +
+def create_intergenic_feature(start: SeqFeature, end: SeqFeature, strand):
     return SeqFeature(
         location=SimpleLocation(start, end, strand=strand),
         type="intergenic",
@@ -27,13 +24,25 @@ def create_intergenic_feature(cds1: SeqFeature, cds2: SeqFeature):
     )
 
 
+def find_intergenic_features(cdss: list[SeqFeature], min_intergenic=50):
+    if not cdss:
+        return []
+
+    cdss.sort(key=lambda x: x.location.start)
+    igs = []
+
+    cur_end = cdss[0].location.end
+    for cds in cdss[1:]:
+        if cds.location.start - 1 > cur_end + min_intergenic + 1:
+            igs.append(create_intergenic_feature(cur_end + 1, cds.location.start - 1, strand=cds.location.strand))
+        cur_end = max(cur_end, cds.location.end)
+
+    return igs
+
+
 def extract_features(feats: List[SeqFeature], min_intergenic=50):
     cdss = [feat for feat in feats if feat.type == "CDS"]
-    igs = [
-        create_intergenic_feature(cds1, cds2)
-        for cds1, cds2 in itertools.pairwise(cdss)
-        if cds2.location.start - cds1.location.end >= min_intergenic
-    ]
+    igs = find_intergenic_features(cdss, min_intergenic)
     utrs = [feat for feat in feats if feat.type == "3'UTR"]
     return igs + utrs
 
