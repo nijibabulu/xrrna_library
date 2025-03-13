@@ -26,7 +26,18 @@ Currently, `parse.py` works only on explicitly labeled UTRs and intergenic seque
 
 In addition, the statistics about virus genome coverage is obtained with `virus_stats.py`. We plot the coverage with `coverage.R`.
 
-Finally we construct teh library with `construct_library.py`.
+The following genomes will be totally covered:
+
+- Zika virus - NC_012532 https://www.ncbi.nlm.nih.gov/nuccore/NC_012532.1
+- SARS-CoV-2 - NC_045512 https://www.ncbi.nlm.nih.gov/nuccore/NC_045512.2
+- Poliovirus - NC_002058 https://www.ncbi.nlm.nih.gov/nuccore/NC_002058.3
+- Norovirus - NC_001959 https://www.ncbi.nlm.nih.gov/nuccore/NC_001959.2
+- Chikungunya virus - NC_004162 https://www.ncbi.nlm.nih.gov/nuccore/NC_004162.2
+- Sindbis virus - NC_001547 https://www.ncbi.nlm.nih.gov/nuccore/NC_001547.1
+
+These IDs are in the file "tiled_genome_ids.txt".
+
+Finally we construct the library with `construct_library.py`.
 
 ```bash
 python scripts/construct_library.py work/utrs_igs_v3/ work/library_v1.fa
