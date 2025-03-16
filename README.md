@@ -41,6 +41,7 @@ Finally we construct the library with `construct_library.py`.
 
 ```bash
 python scripts/construct_library.py work/utrs_igs_fulls_v4/ work/library_v2.fa
+python scripts/library_table.py work/library_v2.fa work/sequences_v2/ work/library_v2.csv
 ```
 
 ### Check for duplicates
