@@ -21,7 +21,7 @@ def write_tiled_seqs(record: SeqRecord, f, oligo_length, tiling_length, seq5, se
 
 @click.command()
 @click.option("--oligo-length", type=int, default=250, show_default=True)
-@click.option("--tiling-length", type=int, default=50, show_default=True)
+@click.option("--tiling-length", type=int, default=80, show_default=True)
 @click.option("--seq5", default="GATCTAATACGACTCACTATAGGATTAATATAAT", show_default=True)
 @click.option("--seq3", default="AAAGAAACAACAACAACAAC", show_default=True)
 @click.argument("input_dir", type=click.Path(file_okay=False, exists=True, path_type=Path))
