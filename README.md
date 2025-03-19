@@ -40,7 +40,8 @@ In addition, the statistics about virus genome coverage is obtained with `virus_
 Finally we construct the library with `construct_library.py`.
 
 ```bash
-python scripts/construct_library.py work/utrs_igs_fulls_v4/ work/library_v3.fa
+python scripts/construct_library.py work/utrs_igs_fulls_v4/ work/library_v4.fa
+python scripts/construct_library.py --max-ambig 0 work/utrs_igs_fulls_v4/ work/library_v5.fa
 python scripts/library_table.py work/library_v2.fa work/sequences_v2/ work/library_v2.csv
 ```
 
