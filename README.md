@@ -25,7 +25,7 @@ Some feature genomes will be totally covered. Those are:
 
 These IDs are in the file `data/tiled_genome_ids.txt`.
 
-I downlooad this set of accessions into `data/sequences_v2.acc` (included in this repo) and then use 
+The download script requires a set of accession such as those in `data/sequences_v2.acc` (included in this repo). From there the sequences can be downloaded and parsed into feature-level sequences with these scripts:
 ```bash
 python scripts/download.py --api-key=[API_KEY] data/sequences_v2.acc work/sequences_v2/
 python scripts/parse.py --full-seq-list data/tiled_genome_ids.txt work/sequences_v2/ work/utrs_igs_fulls_v4
@@ -33,7 +33,7 @@ python scripts/parse.py --full-seq-list data/tiled_genome_ids.txt work/sequences
 
 to download the sequences. *Note:* you have to get your own API key from NCBI to use the download script. This is done by logging into your NCBI account and going to `Account Settings` and going to the section **API Key Management**.
 
-Currently, `parse.py` works only on explicitly labeled UTRs and intergenic sequences, which represents a subset of the seed sequences.  The size of these sequences is explored in `plot.R`.
+`parse.py` will construct 3' UTRs and infer 3' UTRs in cases in which none are found.  The size of these sequences can be explored in `plot.R`.
 
 In addition, the statistics about virus genome coverage is obtained with `virus_stats.py`. We plot the coverage with `coverage.R`.
 
