@@ -1,4 +1,5 @@
 from pathlib import Path
+from xml.etree.ElementInclude import include
 import click
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
@@ -71,14 +72,14 @@ def create_artificial_utrs(cdss: list[SeqFeature], seq_length, buffer_size=50):
         return []
 
 
-def extract_features(rec: SeqRecord, buffer_size=50):
+def extract_features(rec: SeqRecord, buffer_size=50, include_igs=True):
     feats = rec.features
     cdss = [feat for feat in feats if feat.type == "CDS"]
 
     # skip anything with negative strand CDS
     if any(feat.location.strand == -1 for feat in cdss):
         return []
-    igs = find_intergenic_features(cdss, len(rec), buffer_size)
+    igs = find_intergenic_features(cdss, len(rec), buffer_size) if include_igs else []
     utrs = [feat for feat in feats if feat.type == "3'UTR"]
     if len(utrs) == 0:
         utrs = create_artificial_utrs(cdss, len(rec), buffer_size)
@@ -101,6 +102,7 @@ def extract_features(rec: SeqRecord, buffer_size=50):
 @click.option(
     "--max-feature-length", type=int, default=2000, help="Maximum length of a feature to extract"
 )
+@click.option("--exclude-igs", is_flag=True, help="Exclude intergenic sequences from extraction")
 @click.argument("input_dir", type=click.Path(exists=True, file_okay=False, path_type=Path))
 @click.argument("output_dir", type=click.Path(exists=True, file_okay=False, path_type=Path))
 def main(
@@ -109,13 +111,14 @@ def main(
     buffer_size: int,
     max_feature_length: int,
     full_seq_path: Path | None,
+    exclude_igs: bool = False,
 ):
     full_seq_list = {id for id in full_seq_path.read_text().splitlines()} if full_seq_path else {}
     _ = [
         write_feat(rec, feat, file.stem, output_dir)
         for file in input_dir.glob("*.gbk")
         for rec in SeqIO.parse(file, "genbank")
-        for feat in extract_features(rec, buffer_size)
+        for feat in extract_features(rec, buffer_size, include_igs=not exclude_igs)
         if file.stem not in full_seq_list
         and rec.annotations.get("molecule_type") not in ("DNA", "ds-RNA")
         and len(feat) <= max_feature_length

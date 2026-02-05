@@ -73,8 +73,11 @@ uv run python3 scripts/parse_mifsud.py data/Mifsud_2024_Supplementary_table_1_se
 
 Noted that there was a sequence called "novel" included there.
 
-Download the sequences
+Download the sequences and make the library 
 
 ```bash
 uv run scripts/download.py --api-key=$API_KEY data/Mifsud_2024_Supplementary_table_1_sequence_metadata.accs work/sequences_mifsud/
+uv run python scripts/parse.py --exclude-igs work/sequences_mifsud/ work/utrs_mifsud_v1/
+uv run python scripts/construct_library.py work/utrs_mifsud_v1/ work/library_mifsud_v1.fa
+uv run python scripts/construct_library.py --tiling-length 40 work/utrs_mifsud_v1/ work/library_mifsud_v2.fa
 ```
