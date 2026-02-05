@@ -18,8 +18,8 @@ def main(accession_list, output_dir, molecule, format, api_key):
     with open(accession_list) as f, open(output_dir / "err.txt", "w") as log:
         for line in f:
             accession = line.strip()
-            out_path = output_dir / f"{accession}.gbk"
-            if out_path.exists():
+            out_path = output_dir / f"{accession}"
+            if Path(str(out_path) + ".gbk").exists():
                 continue
             try:
                 ncbi_acc_download.core.download_to_file(accession, config, out_path)
