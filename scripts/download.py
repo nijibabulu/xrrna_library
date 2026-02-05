@@ -14,11 +14,13 @@ from ncbi_acc_download.errors import (
 @click.argument("accession_list", type=click.Path(exists=True, path_type=Path))
 @click.argument("output_dir", type=click.Path(exists=True, path_type=Path))
 def main(accession_list, output_dir, molecule, format, api_key):
-    config = ncbi_acc_download.core.Config(molecule=molecule, format=format, api_key=api_key)
+    config = ncbi_acc_download.core.Config(molecule=molecule, format=format, api_key=api_key, keep_filename=True)
     with open(accession_list) as f, open(output_dir / "err.txt", "w") as log:
         for line in f:
             accession = line.strip()
-            out_path = output_dir / f"{accession}"
+            out_path = output_dir / f"{accession}.gbk"
+            if out_path.exists():
+                continue
             try:
                 ncbi_acc_download.core.download_to_file(accession, config, out_path)
             except InvalidIdError as _:

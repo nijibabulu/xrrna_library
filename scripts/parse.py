@@ -7,11 +7,12 @@ from Bio.SeqFeature import SeqFeature, SimpleLocation
 
 def write_feat(rec: SeqRecord, feat: SeqFeature, out_stem: str, output_dir: Path):
     feat_rec = feat.extract(rec)
-    feat_type_slug = feat.type.replace("'", "").replace(" ", "_")
-    range_str = f"{feat.location.start}-{feat.location.end}.{feat_type_slug}"
-    feat_rec.description += f" {feat.type} {range_str}"
-    out_path = output_dir / f"{out_stem}.{range_str}.fa"
-    SeqIO.write(feat_rec, out_path, "fasta")
+    if isinstance(feat_rec, SeqRecord) and feat.location is not None:
+        feat_type_slug = feat.type.replace("'", "").replace(" ", "_")
+        range_str = f"{feat.location.start}-{feat.location.end}.{feat_type_slug}"
+        feat_rec.description += f" {feat.type} {range_str}"
+        out_path = output_dir / f"{out_stem}.{range_str}.fa"
+        SeqIO.write(feat_rec, out_path, "fasta")
 
 
 def create_intergenic_feature(
@@ -93,7 +94,7 @@ def extract_features(rec: SeqRecord, buffer_size=50):
     help="Size on either end of every feature to include in the extracted sequence",
 )
 @click.option(
-    "--full-seq-list",
+    "--full-seq-path",
     type=click.Path(exists=True, file_okay=True, path_type=Path),
     help="List of sequences for which no parsing is needed. The full sequences will be written to the output directory",
 )
@@ -107,9 +108,9 @@ def main(
     output_dir: Path,
     buffer_size: int,
     max_feature_length: int,
-    full_seq_list: Path | None,
+    full_seq_path: Path | None,
 ):
-    full_seq_list = {id for id in full_seq_list.read_text().splitlines()} if full_seq_list else {}
+    full_seq_list = {id for id in full_seq_path.read_text().splitlines()} if full_seq_path else {}
     _ = [
         write_feat(rec, feat, file.stem, output_dir)
         for file in input_dir.glob("*.gbk")

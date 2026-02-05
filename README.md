@@ -55,3 +55,26 @@ python scripts/construct_library.py --seq5='' --seq3='' --oligo-length=196 work/
 bowtie2 -a  -f -x work/index/library_v2_inserts_only -U work/library_v2_inserts_only.fa -S work/library_v2_inserts_only.sam
 ```
 
+
+Flavi-only Library:
+```bash
+uv run scripts/download.py --api-key=$API_KEY data/20260116_flaviAccessionList_v1.acc work/sequences_20260116_flaviAccessionList_v1/
+uv run python scripts/parse.py work/sequences_20260116_flaviAccessionList_v1/ work/utrs_igs_20260116_flavi_v1/
+uv run python scripts/construct_library.py work/utrs_igs_20260116_flavi_v1/ work/library_20260116_flavi_v1.fa
+```
+
+## Mifsud et al data
+
+The Mifsud et al data can be downloaded from [https://doi.org/10.1038/s41586-024-07899-8](https://doi.org/10.1038/s41586-024-07899-8) Supplementary Table 1. The sequences were retrieved as follows:
+
+```bash
+uv run python3 scripts/parse_mifsud.py data/Mifsud_2024_Supplementary_table_1_sequence_metadata.xlsx  > data/Mifsud_2024_Supplementary_table_1_sequence_metadata.accs
+```
+
+Noted that there was a sequence called "novel" included there.
+
+Download the sequences
+
+```bash
+uv run scripts/download.py --api-key=$API_KEY data/Mifsud_2024_Supplementary_table_1_sequence_metadata.accs work/sequences_mifsud/
+```

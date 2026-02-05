@@ -8,5 +8,6 @@ dependencies = [
     "biopython>=1.85",
     "click>=8.1.8",
     "ncbi-acc-download>=0.2.9",
+    "openpyxl>=3.1.5",
     "pandas>=2.2.3",
 ]
