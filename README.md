@@ -63,12 +63,19 @@ uv run python scripts/parse.py work/sequences_20260116_flaviAccessionList_v1/ wo
 uv run python scripts/construct_library.py work/utrs_igs_20260116_flavi_v1/ work/library_20260116_flavi_v1.fa
 ```
 
-## Mifsud et al data
+## Mifsud et al and Simmonds et al data
 
-The Mifsud et al data can be downloaded from [https://doi.org/10.1038/s41586-024-07899-8](https://doi.org/10.1038/s41586-024-07899-8) Supplementary Table 1. The sequences were retrieved as follows:
+The Mifsud et al data can be downloaded from [https://doi.org/10.1038/s41586-024-07899-8](https://doi.org/10.1038/s41586-024-07899-8) Supplementary Table 1. And the Simmonds et all data can be downloaded from [https://doi.org/10.1038/s41564-025-02134-0](https://doi.org/10.1038/s41564-025-02134-0). The sequences were retrieved as follows:
 
 ```bash
-uv run python3 scripts/parse_mifsud.py data/Mifsud_2024_Supplementary_table_1_sequence_metadata.xlsx  > data/Mifsud_2024_Supplementary_table_1_sequence_metadata.accs
+uv run scripts/parse_mifsud_simmonds.py data/Mifsud_2024_Supplementary_table_1_sequence_metadata.xlsx data/Simmonds_2025_Supplementary_Table_5.xlsx  > data/Mifsud_Simmonds.accs
+```
+
+Additional accessions from `data/additional_accs.txt` were also included.
+
+```bash
+grep GenBank data/additional_accs.txt | awk '{print $2}' > data/additional_accs.acc
+cat data/Mifsud_Simmonds.accs data/additional_accs.acc > data/Mifsud_Simmonds_etc.accs
 ```
 
 Noted that there was a sequence called "novel" included there.
@@ -76,8 +83,8 @@ Noted that there was a sequence called "novel" included there.
 Download the sequences and make the library 
 
 ```bash
-uv run scripts/download.py --api-key=$API_KEY data/Mifsud_2024_Supplementary_table_1_sequence_metadata.accs work/sequences_mifsud/
-uv run python scripts/parse.py --exclude-igs work/sequences_mifsud/ work/utrs_mifsud_v1/
-uv run python scripts/construct_library.py work/utrs_mifsud_v1/ work/library_mifsud_v1.fa
-uv run python scripts/construct_library.py --tiling-length 40 work/utrs_mifsud_v1/ work/library_mifsud_v2.fa
+uv run scripts/download.py --api-key=$API_KEY data/Mifsud_Simmonds_etc.accs work/sequences_mifsud_simmonds/
+uv run python scripts/parse.py --exclude-igs work/sequences_mifsud_simmonds/ work/utrs_mifsud_simmonds_v1/
+uv run python scripts/construct_library.py work/utrs_mifsud_simmonds_v1/ work/library_mifsud_simmonds_v1.fa
+uv run python scripts/construct_library.py --tiling-length 40 work/utrs_mifsud_simmonds_v1/ work/library_mifsud_simmonds_v2.fa
 ```

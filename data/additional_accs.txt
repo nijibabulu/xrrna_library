@@ -1,0 +1,47 @@
+Loquat jingmen-related virus 1 isolate Lo1 hypothetical protein gene, complete cds
+GenBank: OL344028.1
+
+Loquat jingmen-related virus 1 isolate Lo1 hypothetical protein genes, complete cds
+GenBank: OL344027.1
+
+Loquat jingmen-related virus 1 isolate Lo1 DEAD-like helicase gene, complete cds
+GenBank: OL344026.1
+
+Loquat jingmen-related virus 1 isolate Lo1 hypothetical protein genes, complete cds
+GenBank: OL344025.1
+
+Loquat jingmen-related virus 1 isolate Lo1 RNA-dependent RNA polymerase gene, complete cds
+GenBank: OL344024.1
+
+TPA_asm: Cereal cyst nematode Jingmen virus 4 isolate CCNJMV4 glycoprotein gene, complete cds
+GenBank: BK071933.1
+
+TPA_asm: Cereal cyst nematode Jingmen virus 2 isolate CCNJMV2 NS3 gene, complete cds
+GenBank: BK071926.1
+
+TPA_asm: Cereal cyst nematode Jingmen virus 2 isolate CCNJMV2 NS5 gene, complete cds
+GenBank: BK071925.1
+
+TPA_asm: Sugar beet cyst nematode Jingmen virus 1 isolate SBCNJMV1 putative capsid gene, partial cds
+GenBank: BK071952.1
+
+TPA_asm: Sugar beet cyst nematode Jingmen virus 1 isolate SBCNJMV1 glycoprotein gene, complete cds
+GenBank: BK071951.1
+
+TPA_asm: Sugar beet cyst nematode Jingmen virus 1 isolate SBCNJMV1 NS3 gene, complete cds
+GenBank: BK071950.1
+
+TPA_asm: Sugar beet cyst nematode Jingmen virus 1 isolate SBCNJMV1 NS5 gene, partial cds
+GenBank: BK071949.1
+
+TPA_asm: Potato cyst nematode Jingmen virus 2 isolate PCNJMV2 putative capsid gene, complete cds
+GenBank: BK071948.1
+
+TPA_asm: Potato cyst nematode Jingmen virus 2 isolate PCNJMV2 glycoprotein gene, complete cds
+GenBank: BK071947.1
+
+TPA_asm: Potato cyst nematode Jingmen virus 2 isolate PCNJMV2 NS3 gene, complete cds
+GenBank: BK071946.1
+
+TPA_asm: Potato cyst nematode Jingmen virus 2 isolate PCNJMV2 NS5 gene, complete cds
+GenBank: BK071945.1
