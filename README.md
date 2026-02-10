@@ -65,7 +65,13 @@ uv run python scripts/construct_library.py work/utrs_igs_20260116_flavi_v1/ work
 
 ## Mifsud et al and Simmonds et al data
 
-The Mifsud et al data can be downloaded from [https://doi.org/10.1038/s41586-024-07899-8](https://doi.org/10.1038/s41586-024-07899-8) Supplementary Table 1. And the Simmonds et all data can be downloaded from [https://doi.org/10.1038/s41564-025-02134-0](https://doi.org/10.1038/s41564-025-02134-0). The sequences were retrieved as follows:
+The Mifsud et al data can be downloaded from [https://doi.org/10.1038/s41586-024-07899-8](https://doi.org/10.1038/s41586-024-07899-8) Supplementary Table 1. And the Simmonds et all data can be downloaded from [https://doi.org/10.1038/s41564-025-02134-0](https://doi.org/10.1038/s41564-025-02134-0). 
+
+Jeanine modified the Mifsud et al data as follows:
+
+> I removed the TOMB outgroup sequences, filled in the accessions for the novel flavi sequences, and removed the Hou et al. sequences. There were 12 "hou et al." sequences, all from a metagenomic sampling from water and soil sources. I will check for more information and if they have an actual associated accession, but I haven't seen anything yet. It's probably ok to eliminate these without worrying we lose information. 
+
+The sequences were retrieved as follows:
 
 ```bash
 uv run scripts/parse_mifsud_simmonds.py data/Mifsud_2024_Supplementary_table_1_sequence_metadata.xlsx data/Simmonds_2025_Supplementary_Table_5.xlsx  > data/Mifsud_Simmonds.accs
@@ -83,8 +89,19 @@ Noted that there was a sequence called "novel" included there.
 Download the sequences and make the library 
 
 ```bash
-uv run scripts/download.py --api-key=$API_KEY data/Mifsud_Simmonds_etc.accs work/sequences_mifsud_simmonds/
-uv run python scripts/parse.py --exclude-igs work/sequences_mifsud_simmonds/ work/utrs_mifsud_simmonds_v1/
-uv run python scripts/construct_library.py work/utrs_mifsud_simmonds_v1/ work/library_mifsud_simmonds_v1.fa
-uv run python scripts/construct_library.py --tiling-length 40 work/utrs_mifsud_simmonds_v1/ work/library_mifsud_simmonds_v2.fa
+uv run scripts/download.py --api-key=$API_KEY data/Mifsud_Simmonds_etc.accs work/sequences_mifsud_simmonds_EDIT/
+uv run python scripts/parse.py --exclude-igs work/sequences_mifsud_simmonds_EDIT/ work/utrs_mifsud_simmonds_EDIT/
+```
+
+In order to discover the reason for exclusion of some sequences from teh final UTRs above, we will compare the accessions in `data/Mifsud_Simmonds_etc.accs` with the accessions in `work/utrs_mifsud_simmonds_EDIT/` and see which ones are missing.
+
+```bash
+ls work/utrs_mifsud_simmonds_EDIT/ | awk -F . '{print $1}' | sort -u > work/utrs_mifsud_simmonds_EDIT.accs
+ls work/sequences_mifsud_simmonds_EDIT/ | awk -F . '{print $1}' | sort -u > work/sequences_mifsud_simmonds_EDIT.accs
+comm work/sequences_mifsud_simmonds_EDIT.accs work/utrs_mifsud_simmonds_EDIT.accs
+```
+
+```bash
+uv run python scripts/construct_library.py work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_v1.fa
+uv run python scripts/construct_library.py --tiling-length 40 work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_v2.fa
 ```
