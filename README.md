@@ -102,6 +102,18 @@ comm work/sequences_mifsud_simmonds_EDIT.accs work/utrs_mifsud_simmonds_EDIT.acc
 ```
 
 ```bash
-uv run python scripts/construct_library.py work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_v1.fa
-uv run python scripts/construct_library.py --tiling-length 40 work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_v2.fa
+uv run python scripts/construct_library.py work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_tile80.fa
+uv run python scripts/construct_library.py --tiling-length 40 work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_tile40.fa
+uv run python scripts/construct_library.py --tiling-length 20 work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_tile20.fa
 ```
+
+Now, take a look at an oligo-less library to see if there are any duplicates. 
+
+```bash
+uv run python scripts/construct_library.py --seq5='' --seq3='' --oligo-length=196 work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_inserts_only.fa 
+cd-hit-est -i work/library_mifsud_simmonds_EDIT_inserts_only.fa -c 0.99 -n 10 -o work/library_mifsud_simmonds_EDIT_inserts_only.cdhit.fa 
+```
+
+With the ad-hoc script parse_cdhit_clusters.py, we can parse the clusters and outptu the duplicated accessions in `work/mifsud_simmonds_duplicate_seqs.csv`. 
+
+
