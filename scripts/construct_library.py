@@ -41,7 +41,7 @@ def write_tiled_seqs(
     seq5 = Seq(seq5)
     seq3 = Seq(seq3)
     insert_length = oligo_length - len(seq5) - len(seq3)
-    for i in range(0, len(seq) - oligo_length + tiling_length, tiling_length):
+    for i in range(0, len(seq) - insert_length + tiling_length, tiling_length):
         insert = process_insert(seq[i : i + insert_length], max_ambig)
         if insert is not None:
             tiled_seq = seq5 + insert + seq3
