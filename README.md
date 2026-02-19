@@ -117,3 +117,18 @@ cd-hit-est -i work/library_mifsud_simmonds_EDIT_inserts_only.fa -c 0.99 -n 10 -o
 With the ad-hoc script parse_cdhit_clusters.py, we can parse the clusters and outptu the duplicated accessions in `work/mifsud_simmonds_duplicate_seqs.csv`. 
 
 
+Do the same with the full UTR sequences:
+
+```bash
+cat work/utrs_mifsud_simmonds_EDIT/*.fa >  work/utrs_mifsud_simmonds_EDIT.fa
+cd-hit-est -i work/utrs_mifsud_simmonds_EDIT.fa -c 0.99 -n 10 -o work/utrs_mifsud_simmonds_EDIT.cdhit.fa
+uv run scripts/parse_cdhit_clusters.py work/utrs_mifsud_simmonds_EDIT.cdhit.fa.clstr work/utrs_mifsud_simmonds_EDIT.cdhit.fa.dups.csv work/utrs_mifsud_simmonds_EDIT.cdhit.fa.for_removal.txt
+```
+
+Remove the accessions from work/utrs_mifsud_simmonds_EDIT.cdhit.fa.for_removal.txt before making the library. TODO: check if blacklisting works.
+
+```bash
+uv run python scripts/construct_library.py --blacklist work/utrs_mifsud_simmonds_EDIT.cdhit.fa.for_removal.txt --tiling-length 20 work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_tile20.dupsremoved.fa
+```
+
+

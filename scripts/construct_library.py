@@ -55,15 +55,18 @@ def write_tiled_seqs(
 @click.option("--seq3", default="AAAGAAACAACAACAACAAC", show_default=True)
 @click.option("--max-ambig", type=int, default=5, show_default=True)
 @click.option("--random-seed", type=int, default=42, show_default=True)
+@click.option("--blacklist", type=click.Path(exists=True, dir_okay=False, path_type=Path))
 @click.argument("input_dir", type=click.Path(file_okay=False, exists=True, path_type=Path))
 @click.argument("output_fasta", type=click.Path(dir_okay=False))
-def main(input_dir, output_fasta, oligo_length, tiling_length, seq5, seq3, max_ambig, random_seed):
+def main(input_dir, output_fasta, oligo_length, tiling_length, seq5, seq3, max_ambig, random_seed, blacklist):
     random.seed(random_seed)
+    blacklist_ids = set(blacklist.read_text().splitlines()) if blacklist else set()
     with open(output_fasta, "w") as f:
         _ = [
             write_tiled_seqs(record, f, oligo_length, tiling_length, seq5, seq3, file, max_ambig)
             for file in input_dir.glob("*.fa")
             for record in SeqIO.parse(file, "fasta")
+            if record.id not in blacklist_ids
         ]
 
 
