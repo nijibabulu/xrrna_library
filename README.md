@@ -149,3 +149,25 @@ uv run python scripts/construct_library.py --seq5='' --seq3='' --oligo-length=19
 cd-hit-est -i work/library_mifsud_simmonds_EDIT_tile20.dupsremoved.insertsonly.fa -c 0.99 -n 10 -o work/library_mifsud_simmonds_EDIT_tile20.dupsremoved.insertsonly.cdhit.fa 
 ```
 
+## Additional genomes from Jeanine
+
+On Feb 25, 2026, Jeanine provided a list of additional accessions that were not included in the Mifsud et al and Simmonds et al papers. These were added to `data/jeanine_new_genomes.txt`/`data/jeanine_new_genomes.acc.txt`.
+
+```bash
+uv run python3 scripts/download.py --api-key $API_KEY data/jeneane_new_genomes_20260225.acc.txt work/jeanine_new_genomes_20260225/
+uv run python scripts/parse.py work/jeanine_new_genomes_20260225 work/jeanine_new_genomes_20260225_utrs/
+# combine current and additional utrs
+cp work/jeanine_new_genomes_20260225_utrs/* work/utrs_mifsud_simmonds_EDIT_trimmed/* work/utrs_mifsud_simmonds_EDIT_trimmed_with_jeanine_new_genomes_20260225
+# make new libraries
+uv run python scripts/construct_library.py --blacklist data/utrs_redundant_remove.cdhit.fa.dups.noflavi.csv --tiling-length 20 work/utrs_mifsud_simmonds_EDIT_trimmed_with_jeanine_new_genomes_20260225/ work/library_mifsud_simmonds_EDIT_tile20_with_jeanine_new_genomes_20260225.dupsremoved.fa
+uv run python scripts/construct_library.py --blacklist data/utrs_redundant_remove.cdhit.fa.dups.noflavi.csv --tiling-length 30 work/utrs_mifsud_simmonds_EDIT_trimmed_with_jeanine_new_genomes_20260225/ work/library_mifsud_simmonds_EDIT_tile30_with_jeanine_new_genomes_20260225.dupsremoved.fa
+uv run python scripts/construct_library.py --blacklist data/utrs_redundant_remove.cdhit.fa.dups.noflavi.csv --tiling-length 40 work/utrs_mifsud_simmonds_EDIT_trimmed_with_jeanine_new_genomes_20260225/ work/library_mifsud_simmonds_EDIT_tile40_with_jeanine_new_genomes_20260225.dupsremoved.fa
+uv run python scripts/construct_library.py --blacklist data/utrs_redundant_remove.cdhit.fa.dups.noflavi.csv --tiling-length 50 work/utrs_mifsud_simmonds_EDIT_trimmed_with_jeanine_new_genomes_20260225/ work/library_mifsud_simmonds_EDIT_tile50_with_jeanine_new_genomes_20260225.dupsremoved.fa
+```
+
+We now name the library after ordering:
+
+```bash
+cat work/utrs_igs_fulls_v4/* > work/pilot_library_20260319.fa
+cat work/utrs_mifsud_simmonds_EDIT_trimmed_with_jeanine_new_genomes_20260225/* > work/flavi_library_20260228.fa
+```
