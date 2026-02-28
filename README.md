@@ -90,7 +90,8 @@ Download the sequences and make the library
 
 ```bash
 uv run scripts/download.py --api-key=$API_KEY data/Mifsud_Simmonds_etc.accs work/sequences_mifsud_simmonds_EDIT/
-uv run python scripts/parse.py --exclude-igs work/sequences_mifsud_simmonds_EDIT/ work/utrs_mifsud_simmonds_EDIT/
+uv run python scripts/parse.py --min-homopolymer-run 100000000 --exclude-igs work/sequences_mifsud_simmonds_EDIT/ work/utrs_mifsud_simmonds_EDIT/
+uv run python scripts/parse.py --min-homopolymer-run 8 --exclude-igs work/sequences_mifsud_simmonds_EDIT/ work/utrs_mifsud_simmonds_EDIT_trimmed/
 ```
 
 In order to discover the reason for exclusion of some sequences from teh final UTRs above, we will compare the accessions in `data/Mifsud_Simmonds_etc.accs` with the accessions in `work/utrs_mifsud_simmonds_EDIT/` and see which ones are missing.
@@ -102,7 +103,7 @@ comm work/sequences_mifsud_simmonds_EDIT.accs work/utrs_mifsud_simmonds_EDIT.acc
 ```
 
 ```bash
-uv run python scripts/construct_library.py work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_tile80.fa
+uv run python scripts/construct_library.py work/utrs_mifsud_simmonds_EDIT_trimmed/ work/library_mifsud_simmonds_EDIT_tile80.fa
 uv run python scripts/construct_library.py --tiling-length 40 work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_tile40.fa
 uv run python scripts/construct_library.py --tiling-length 20 work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_tile20.fa
 ```
@@ -114,7 +115,7 @@ uv run python scripts/construct_library.py --seq5='' --seq3='' --oligo-length=19
 cd-hit-est -i work/library_mifsud_simmonds_EDIT_inserts_only.fa -c 0.99 -n 10 -o work/library_mifsud_simmonds_EDIT_inserts_only.cdhit.fa 
 ```
 
-With the ad-hoc script parse_cdhit_clusters.py, we can parse the clusters and outptu the duplicated accessions in `work/mifsud_simmonds_duplicate_seqs.csv`. 
+With the ad-hoc script parse_cdhit_clusters.py, we can parse the clusters and output the duplicated accessions in `work/mifsud_simmonds_duplicate_seqs.csv`. 
 
 
 Do the same with the full UTR sequences:
@@ -125,10 +126,26 @@ cd-hit-est -i work/utrs_mifsud_simmonds_EDIT.fa -c 0.99 -n 10 -o work/utrs_mifsu
 uv run scripts/parse_cdhit_clusters.py work/utrs_mifsud_simmonds_EDIT.cdhit.fa.clstr work/utrs_mifsud_simmonds_EDIT.cdhit.fa.dups.csv work/utrs_mifsud_simmonds_EDIT.cdhit.fa.for_removal.txt
 ```
 
-Remove the accessions from work/utrs_mifsud_simmonds_EDIT.cdhit.fa.for_removal.txt before making the library. TODO: check if blacklisting works.
-
-```bash
-uv run python scripts/construct_library.py --blacklist work/utrs_mifsud_simmonds_EDIT.cdhit.fa.for_removal.txt --tiling-length 20 work/utrs_mifsud_simmonds_EDIT/ work/library_mifsud_simmonds_EDIT_tile20.dupsremoved.fa
+Lena provided a list of sequences that were removed from the final library based on the duplicate csv, and forcing inclusion of RefSeq sequences. I added the following accessions to the blacklist file `data/utrs_redundant_remove.cdhit.fa.dups.csv` to create `data/utrs_redundant_remove.cdhit.fa.dups.noflavi.csv`:
+```
+NC_003756.1
+NC_003775.1
+J04357.1
+MK301398.1
 ```
 
+
+```bash
+uv run python scripts/construct_library.py --blacklist data/utrs_redundant_remove.cdhit.fa.dups.noflavi.csv --tiling-length 20 work/utrs_mifsud_simmonds_EDIT_trimmed/ work/library_mifsud_simmonds_EDIT_tile20.dupsremoved.fa
+uv run python scripts/construct_library.py --blacklist data/utrs_redundant_remove.cdhit.fa.dups.noflavi.csv --tiling-length 30 work/utrs_mifsud_simmonds_EDIT_trimmed/ work/library_mifsud_simmonds_EDIT_tile30.dupsremoved.fa
+uv run python scripts/construct_library.py --blacklist data/utrs_redundant_remove.cdhit.fa.dups.noflavi.csv --tiling-length 40 work/utrs_mifsud_simmonds_EDIT_trimmed/ work/library_mifsud_simmonds_EDIT_tile40.dupsremoved.fa
+uv run python scripts/construct_library.py --blacklist data/utrs_redundant_remove.cdhit.fa.dups.noflavi.csv --tiling-length 50 work/utrs_mifsud_simmonds_EDIT_trimmed/ work/library_mifsud_simmonds_EDIT_tile50.dupsremoved.fa
+```
+
+Use a highly tiled version to check for duplicates in the final library:
+
+```bash
+uv run python scripts/construct_library.py --seq5='' --seq3='' --oligo-length=196  --blacklist data/utrs_redundant_remove.cdhit.fa.dups.csv  work/utrs_mifsud_simmonds_EDIT_trimmed/ work/library_mifsud_simmonds_EDIT_tile20.dupsremoved.insertsonly.fa
+cd-hit-est -i work/library_mifsud_simmonds_EDIT_tile20.dupsremoved.insertsonly.fa -c 0.99 -n 10 -o work/library_mifsud_simmonds_EDIT_tile20.dupsremoved.insertsonly.cdhit.fa 
+```
 

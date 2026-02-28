@@ -2,7 +2,6 @@
 
 import itertools
 import re
-import sys
 from typing import Annotated
 from pathlib import Path
 import pandas as pd

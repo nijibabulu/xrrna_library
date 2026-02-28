@@ -1,5 +1,5 @@
+import itertools
 from pathlib import Path
-from xml.etree.ElementInclude import include
 import click
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
@@ -72,7 +72,34 @@ def create_artificial_utrs(cdss: list[SeqFeature], seq_length, buffer_size=50):
         return []
 
 
-def extract_features(rec: SeqRecord, buffer_size=50, include_igs=True):
+def trim_3prime_homopolymer(feat: SeqFeature, rec: SeqRecord, min_len=8) -> SeqFeature:
+    seq_str = str(feat.extract(rec).seq).upper()
+    three_prime_homopolymer = list(next(itertools.groupby(reversed(seq_str)))[1])
+
+    if len(three_prime_homopolymer) >= min_len:
+        if len(set(three_prime_homopolymer)) >= len(rec):
+            raise ValueError(
+                f"Unexpectedly long homopolymer run of '{three_prime_homopolymer[0]}' of length {len(three_prime_homopolymer)} in record {rec.id} with sequence length {len(rec)}"
+            )
+
+        trimmed_feat = SeqFeature(
+            SimpleLocation(
+                feat.location.start,
+                feat.location.end - len(three_prime_homopolymer),
+                strand=feat.location.strand,
+            ),
+            type=feat.type,
+            qualifiers=feat.qualifiers.copy(),
+        )
+        print(
+            f"Trimming homopolymer run of '{seq_str[-1]}' of length {len(three_prime_homopolymer)} from record {rec.id} feature {format_feat(feat)} to {format_feat(trimmed_feat)}",
+        )
+        return trimmed_feat
+    else:
+        return feat
+
+
+def extract_features(rec: SeqRecord, buffer_size=50, min_homopolymer_run=8, include_igs=True):
     feats = rec.features
     cdss = [feat for feat in feats if feat.type == "CDS"]
 
@@ -84,7 +111,9 @@ def extract_features(rec: SeqRecord, buffer_size=50, include_igs=True):
     if len(utrs) == 0:
         utrs = create_artificial_utrs(cdss, len(rec), buffer_size)
 
-    return igs + utrs
+    feats = [trim_3prime_homopolymer(feat, rec, min_len=min_homopolymer_run) for feat in igs + utrs]
+
+    return feats
 
 
 @click.command()
@@ -102,6 +131,12 @@ def extract_features(rec: SeqRecord, buffer_size=50, include_igs=True):
 @click.option(
     "--max-feature-length", type=int, default=2000, help="Maximum length of a feature to extract"
 )
+@click.option(
+    "--min-homopolymer-run",
+    type=int,
+    default=8,
+    help="Minimum length of a homopolymer run to trim from the 3' end of features",
+)
 @click.option("--exclude-igs", is_flag=True, help="Exclude intergenic sequences from extraction")
 @click.argument("input_dir", type=click.Path(exists=True, file_okay=False, path_type=Path))
 @click.argument("output_dir", type=click.Path(exists=True, file_okay=False, path_type=Path))
@@ -110,6 +145,7 @@ def main(
     output_dir: Path,
     buffer_size: int,
     max_feature_length: int,
+    min_homopolymer_run: int,
     full_seq_path: Path | None,
     exclude_igs: bool = False,
 ):
@@ -118,7 +154,9 @@ def main(
         write_feat(rec, feat, file.stem, output_dir)
         for file in input_dir.glob("*.gbk")
         for rec in SeqIO.parse(file, "genbank")
-        for feat in extract_features(rec, buffer_size, include_igs=not exclude_igs)
+        for feat in extract_features(
+            rec, buffer_size, min_homopolymer_run, include_igs=not exclude_igs
+        )
         if file.stem not in full_seq_list
         and rec.annotations.get("molecule_type") not in ("DNA", "ds-RNA")
         and len(feat) <= max_feature_length
