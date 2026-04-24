@@ -171,3 +171,21 @@ We now name the library after ordering:
 cat work/utrs_igs_fulls_v4/* > work/pilot_library_20260319.fa
 cat work/utrs_mifsud_simmonds_EDIT_trimmed_with_jeanine_new_genomes_20260225/* > work/flavi_library_20260228.fa
 ```
+
+These were then sanitized and made unique with a script from Jeanine called `rename_pretile_fa.py` from the viromelib library.
+Now make a useful gtf for IGV visualization:
+
+```bash
+~/builds/gmap-2025-07-31/stage/bin/gmap_build -D work  -d  pilot_library_20260319_uniqueIDs work/pilot_library_20260319.uniqueIDs.fa 
+~/builds/gmap-2025-07-31/stage/bin/gmap -D work -d pilot_library_20260319_uniqueIDs --format=psl work/library_v4.fa > work/pilot_library_20260319.uniqueIDs.psl
+psl2bed < work/pilot_library_20260319.uniqueIDs.psl  > work/pilot_library_20260319.uniqueIDs.bed
+```
+
+In a second iteration, reconstruct the library using the unique IDs and the bed file to make sure that the sequences are aligned in the same way as the original library.
+```bash
+python scripts/construct_library.py --bed-out work/pilot_library_20260319.uniqueIDs.bed work/pilot_library_20260319_uniqueIDs work/library_v4.uniqueIDs.fa
+```
+
+Note this is not entirely identical but appears to be a superset of the 
+
+TODO: we should fix the few that do not get aligned because of the oligo sequences. We can do this by aligning the inserts only and then adding the oligo sequences back in.
